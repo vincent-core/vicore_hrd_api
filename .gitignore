@@ -1,0 +1,9 @@
+# ignore ALL .log files
+*.log
+*.env
+*.env_dev
+
+# ignore ALL files in ANY directory named temp
+images/lokalis/
+images/odontogram/
+images/anatomi/
