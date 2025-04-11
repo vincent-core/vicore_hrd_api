@@ -92,7 +92,7 @@ func (lu *antreanRepository) OnGetPengkajianPerawatRepo(NoReg string) (res antre
 func (lu *antreanRepository) OnGetPengkajianDokterRepo(NoReg string) (res antrean.DAsesmenDokter, err error) {
 	result := lu.DB.Model(&res).Select("kd_bagian, noreg,  pelayanan").Where(&antrean.DAsesmenDokter{
 		Noreg: NoReg,
-	}).Preload("KPelayanan").Find(&res)
+	}).Order("insert_dttm DESC").Preload("KPelayanan").Limit(1).Find(&res)
 
 	if result.Error != nil {
 		return res, result.Error

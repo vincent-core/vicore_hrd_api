@@ -30,6 +30,7 @@ func (mm *AntreanMapper) ToMappingDataDResiterPasien(data []antrean.DRegisterPas
 			Keterangan: V.Keterangan,
 			Pelayaan:   strings.ToUpper(V.Pelayaan),
 			Bagian:     V.Bagian,
+			KdBag:      V.KdBag,
 		})
 	}
 	return res

@@ -167,6 +167,7 @@ func (im *ResumeMedisMapper) ToMappingCariDataPasienPulang(data []resumemedis.Ca
 				Noreg:        v.Noreg,
 				Nama:         v.Nama,
 				JenisKelamin: jk.JenisKelamin,
+				Tgllahir:     v.Tgllahir,
 			})
 
 		}

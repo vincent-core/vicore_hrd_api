@@ -156,6 +156,7 @@ type (
 		Bagian    string `json:"bagian"`
 		Noreg     string `json:"noreg"`
 		Nama      string `json:"nama"`
+		Tgllahir  string `json:"tanggal_lahir"`
 	}
 	DataJenis struct {
 		Id           string `json:"id"`

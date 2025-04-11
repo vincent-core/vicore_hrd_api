@@ -66,6 +66,7 @@ type (
 		Keterangan string
 		Pelayaan   string
 		Bagian     string
+		KdBag      string
 	}
 )
 

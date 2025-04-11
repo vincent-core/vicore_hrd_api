@@ -34,9 +34,9 @@ func (su *hrdUsecase) OnLoginUserByEmailAndPasswordUseCase(Email string, Passwor
 	}
 
 	// CEKK APAKAH KARYAWAN DOKTER ATAU PERAWAT
-	if kemploye.KeteranganPerson != "DOKTER" && kemploye.KeteranganPerson != "PERAWAT" {
-		return res, "Aplikasi hanya dapat diakses oleh Dokter dan Perawat", errors.New("Error App")
-	}
+	// if kemploye.KeteranganPerson != "DOKTER" && kemploye.KeteranganPerson != "PERAWAT" {
+	// 	return res, "Aplikasi hanya dapat diakses oleh Dokter dan Perawat", errors.New("Error App")
+	// }
 
 	// CEK PASSWORD APAKAH SESUAI DENGAN DATA
 	var sha = sha1.New()

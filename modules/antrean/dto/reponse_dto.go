@@ -10,5 +10,6 @@ type (
 		Keterangan string `json:"keterangan"`
 		Pelayaan   string `json:"pelayanan"`
 		Bagian     string `json:"bagian"`
+		KdBag      string `json:"kd_bagian"`
 	}
 )

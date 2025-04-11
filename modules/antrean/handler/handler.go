@@ -128,6 +128,7 @@ func (hh *AntreanHandler) OnGetDataRegistrasiPasienFiberHandler(c *fiber.Ctx) er
 			Pelayaan:   asesmen.Pelayanan,
 			Bagian:     asesmen.KPelayanan.Bagian,
 			Keterangan: data[i].Keterangan,
+			KdBag:      data[i].KdBag,
 		})
 	}
 

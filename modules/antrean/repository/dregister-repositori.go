@@ -7,9 +7,11 @@ import (
 )
 
 func (lu *antreanRepository) OnGetDataRegisterPasienByID(ID string) (res []antrean.DRegisterPasien, err error) {
-	query := "SELECT tanggal,  jam, id, noreg, nama, kunjungan, keterangan from rekam.dregister where id=? order by tanggal desc limit 15"
+	query := `SELECT dr.tanggal, dr.jam, dr.id, dr.noreg, dr.nama, dr.keterangan ,dr.bagian, kp.kd_bag
+	FROM his.dbangsal_rep as dr 
+	LEFT JOIN vicore_lib.kpelayanan as kp ON dr.bagian = kp.bagian 
+	WHERE dr.id=? ORDER BY tanggal DESC`
 	result := lu.DB.Raw(query, ID).Scan(&res)
-
 	if result.Error != nil {
 		message := fmt.Sprintf("Error %s, Data tidak ditemukan", result.Error.Error())
 		return res, errors.New(message)

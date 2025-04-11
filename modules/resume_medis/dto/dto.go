@@ -12,5 +12,6 @@ type (
 		Noreg        string `json:"noreg"`
 		Nama         string `json:"nama"`
 		JenisKelamin string `json:"jenis_kelamin"`
+		Tgllahir     string `json:"tanggal_lahir"`
 	}
 )
