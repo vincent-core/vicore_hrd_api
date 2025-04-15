@@ -32,52 +32,68 @@ func NewAntreanUseCase(antreanRepository entity.AntreanRepository, logging *logr
 	}
 }
 
-func (iu *antreanUseCase) OnGetAntrianIGDUseCase(modulID string, person string, userID string) (res []dto.AntrianPasien, message string, err error) {
+func (iu *antreanUseCase) OnGetAntrianIGDUseCase(req dto.GetAntranPasien, person string, userID string) (res []dto.AntrianPasien, message string, err error) {
+	modulID := req.KDBagian
+	var today = time.Now()
+	var dateFrom = req.DateFrom
+	var dateTo = req.DateTo
+	iu.logging.Info("kd bagian ", req.KDBagian)
+	iu.logging.Info("date from ", dateFrom)
+	iu.logging.Info("date to ", dateTo)
+
+	if req.DateFrom == "" {
+		dateFrom = today.Format("2006-01-02")
+	}
+
+	if req.DateTo == "" {
+		dateTo = today.Format("2006-01-02")
+	}
+
 	switch modulID {
 	case "IGD001":
-		if person == "DOKTER" {
-			var antrianpasien = []dto.AntrianPasien{}
+		// if person == "DOKTER" {
+		// 	var antrianpasien = []dto.AntrianPasien{}
 
-			antrianDokterUmum, er12 := iu.antreanRepository.GetAntrianIGDDokterUmumRepository(userID)
+		// 	antrianDokterUmum, er12 := iu.antreanRepository.GetAntrianIGDDokterUmumRepository(userID, dateFrom, dateTo)
 
-			if er12 != nil {
-				return make([]dto.AntrianPasien, 0), "Data tidak ditemukan", er12
-			}
+		// 	if er12 != nil {
+		// 		return make([]dto.AntrianPasien, 0), "Data tidak ditemukan", er12
+		// 	}
 
-			// JIKA ANTRIAN PASIEN KOSONG
-			if len(antrianDokterUmum) == 0 {
-				return make([]dto.AntrianPasien, 0), "Data kosong", nil
-			}
+		// 	// JIKA ANTRIAN PASIEN KOSONG
+		// 	if len(antrianDokterUmum) == 0 {
+		// 		return make([]dto.AntrianPasien, 0), "Data kosong", nil
+		// 	}
 
-			// LOOPING ANTRIAN DOKTER UMUM
-			for i := 0; i <= len(antrianDokterUmum)-1; i++ {
-				asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(modulID, "RAJAL", antrianDokterUmum[i].Noreg)
-				asesmenDokter, _ := iu.AsesmenRepository.OnGeAsesmenDokterRepository(antrianDokterUmum[i].Noreg, modulID)
+		// 	// LOOPING ANTRIAN DOKTER UMUM
+		// 	for i := 0; i <= len(antrianDokterUmum)-1; i++ {
+		// 		asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(modulID, "RAJAL", antrianDokterUmum[i].Noreg)
+		// 		asesmenDokter, _ := iu.AsesmenRepository.OnGeAsesmenDokterRepository(antrianDokterUmum[i].Noreg, modulID)
 
-				antrianpasien = append(antrianpasien, dto.AntrianPasien{
-					Tgllahir:       tanggalIndoFromISO(antrianDokterUmum[i].Tgllahir),
-					NoAntrean:      antrianDokterUmum[i].NoAntrian,
-					JenisKelamin:   antrianDokterUmum[i].Jeniskelamin,
-					Debitur:        "-",
-					KodeDebitur:    "-",
-					Noreg:          antrianDokterUmum[i].Noreg,
-					Mrn:            antrianDokterUmum[i].Id,
-					Keterangan:     "-",
-					NamaPasien:     antrianDokterUmum[i].Nama,
-					KdBag:          "IGD001",
-					Bagian:         "Instalasi Gawat Darurat",
-					Pelayanan:      "RAJAL",
-					NamaDokter:     antrianDokterUmum[i].Dokter,
-					KdDokter:       antrianDokterUmum[i].Kodedr,
-					Kamar:          "-",
-					Kasur:          "-",
-					AsesmenDokter:  asesmenDokter.Dokter.Namadokter,
-					AsesmenPerawat: asesmenPerawat.Perawat.Namaperawat,
-				})
-			}
+		// 		antrianpasien = append(antrianpasien, dto.AntrianPasien{
+		// 			Tgllahir:       tanggalIndoFromISO(antrianDokterUmum[i].Tgllahir),
+		// 			NoAntrean:      antrianDokterUmum[i].NoAntrian,
+		// 			JenisKelamin:   antrianDokterUmum[i].Jeniskelamin,
+		// 			Debitur:        "-",
+		// 			KodeDebitur:    "-",
+		// 			Noreg:          antrianDokterUmum[i].Noreg,
+		// 			Mrn:            antrianDokterUmum[i].Id,
+		// 			Keterangan:     "-",
+		// 			NamaPasien:     antrianDokterUmum[i].Nama,
+		// 			KdBag:          "IGD001",
+		// 			Bagian:         "Instalasi Gawat Darurat",
+		// 			Pelayanan:      "RAJAL",
+		// 			NamaDokter:     antrianDokterUmum[i].Dokter,
+		// 			KdDokter:       antrianDokterUmum[i].Kodedr,
+		// 			Kamar:          "-",
+		// 			Kasur:          "-",
+		// 			AsesmenDokter:  asesmenDokter.Dokter.Namadokter,
+		// 			AsesmenPerawat: asesmenPerawat.Perawat.Namaperawat,
+		// 		})
+		// 	}
 
-			return antrianpasien, "OK", nil
-		}
+		// 	return antrianpasien, "OK", nil
+		// }
 
 		antarinUGD, er12 := iu.antreanRepository.GetAntrianUGD()
 
@@ -119,51 +135,51 @@ func (iu *antreanUseCase) OnGetAntrianIGDUseCase(modulID string, person string, 
 
 		return antrianpasien, "OK", nil
 	default:
-		if person == "DOKTER" {
-			antrians, err := iu.antreanRepository.GetPasienBangsalForDokter(modulID, userID)
+		// if person == "DOKTER" {
+		// 	antrians, err := iu.antreanRepository.GetPasienBangsalForDokter(modulID, userID, dateFrom, dateTo)
 
-			if err != nil {
-				return make([]dto.AntrianPasien, 0), "Data tidak ditemukan", err
-			}
+		// 	if err != nil {
+		// 		return make([]dto.AntrianPasien, 0), "Data tidak ditemukan", err
+		// 	}
 
-			if len(antrians) == 0 {
-				return make([]dto.AntrianPasien, 0), "Data kosong", nil
-			}
+		// 	if len(antrians) == 0 {
+		// 		return make([]dto.AntrianPasien, 0), "Data kosong", nil
+		// 	}
 
-			var antrianpasien = []dto.AntrianPasien{}
-			bagian, _ := iu.hrdRepository.OnFindPelayananRepository(modulID)
+		// 	var antrianpasien = []dto.AntrianPasien{}
+		// 	bagian, _ := iu.hrdRepository.OnFindPelayananRepository(modulID)
 
-			// LOOPING DATA JIKA DITEMUKAN
-			for i := 0; i <= len(antrians)-1; i++ {
-				asesmenDokter, _ := iu.AsesmenRepository.OnGeAsesmenDokterRepository(antrians[i].Noreg, modulID)
-				asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(modulID, "RANAP", antrians[i].Noreg)
-				antrianpasien = append(antrianpasien, dto.AntrianPasien{
-					Tgllahir:       tanggalIndoFromISO(antrians[i].Tgllahir),
-					NoAntrean:      "-",
-					JenisKelamin:   antrians[i].Sex,
-					Debitur:        "-",
-					KodeDebitur:    "-",
-					Noreg:          antrians[i].Noreg,
-					Mrn:            antrians[i].Id,
-					Keterangan:     "-",
-					NamaPasien:     antrians[i].Nama,
-					KdBag:          bagian.KdBag,
-					Bagian:         bagian.Bagian,
-					Pelayanan:      "RANAP",
-					NamaDokter:     antrians[i].Dokter,
-					KdDokter:       antrians[i].Kodedr,
-					Kamar:          "-",
-					Kasur:          "-",
-					AsesmenDokter:  asesmenDokter.Dokter.Namadokter,
-					AsesmenPerawat: asesmenPerawat.Perawat.Namaperawat,
-				})
-			}
+		// 	// LOOPING DATA JIKA DITEMUKAN
+		// 	for i := 0; i <= len(antrians)-1; i++ {
+		// 		asesmenDokter, _ := iu.AsesmenRepository.OnGeAsesmenDokterRepository(antrians[i].Noreg, modulID)
+		// 		asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(modulID, "RANAP", antrians[i].Noreg)
+		// 		antrianpasien = append(antrianpasien, dto.AntrianPasien{
+		// 			Tgllahir:       tanggalIndoFromISO(antrians[i].Tgllahir),
+		// 			NoAntrean:      "-",
+		// 			JenisKelamin:   antrians[i].Sex,
+		// 			Debitur:        "-",
+		// 			KodeDebitur:    "-",
+		// 			Noreg:          antrians[i].Noreg,
+		// 			Mrn:            antrians[i].Id,
+		// 			Keterangan:     "-",
+		// 			NamaPasien:     antrians[i].Nama,
+		// 			KdBag:          bagian.KdBag,
+		// 			Bagian:         bagian.Bagian,
+		// 			Pelayanan:      "RANAP",
+		// 			NamaDokter:     antrians[i].Dokter,
+		// 			KdDokter:       antrians[i].Kodedr,
+		// 			Kamar:          "-",
+		// 			Kasur:          "-",
+		// 			AsesmenDokter:  asesmenDokter.Dokter.Namadokter,
+		// 			AsesmenPerawat: asesmenPerawat.Perawat.Namaperawat,
+		// 		})
+		// 	}
 
-			return antrianpasien, "OK", nil
-		}
+		// 	return antrianpasien, "OK", nil
+		// }
 
 		// JIKA TIDAK DOKTER
-		antrianBangsal, er122 := iu.antreanRepository.GetPasienBangsal(modulID)
+		antrianBangsal, er122 := iu.antreanRepository.GetPasienBangsal(modulID, dateFrom, dateTo)
 
 		if er122 != nil {
 			return make([]dto.AntrianPasien, 0), "Data tidak ditemukan", er122
@@ -174,11 +190,11 @@ func (iu *antreanUseCase) OnGetAntrianIGDUseCase(modulID string, person string, 
 		}
 
 		var antrianpasien = []dto.AntrianPasien{}
-		bagian, _ := iu.hrdRepository.OnFindPelayananRepository(modulID)
+		bagian, _ := iu.hrdRepository.OnFindPelayananRepository(req.KDBagian)
 
 		for i := 0; i <= len(antrianBangsal)-1; i++ {
-			asesmenDokter, _ := iu.AsesmenRepository.OnGetAsesmenDokterRANAPRepository(antrianBangsal[i].Noreg, modulID)
-			asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(modulID, "RANAP", antrianBangsal[i].Noreg)
+			asesmenDokter, _ := iu.AsesmenRepository.OnGetAsesmenDokterRANAPRepository(antrianBangsal[i].Noreg, req.KDBagian)
+			asesmenPerawat, _ := iu.AsesmenRepository.OnGetPengkajianKeperawatanRepository(req.KDBagian, "RANAP", antrianBangsal[i].Noreg)
 
 			antrianpasien = append(antrianpasien, dto.AntrianPasien{
 				Tgllahir:       tanggalIndoFromISO(antrianBangsal[i].Tgllahir),
@@ -218,7 +234,7 @@ func (iu *antreanUseCase) OnDashboardUseCase(modulID string) (res dto.ResponseDa
 	}
 
 	if modulID != "IGD001" {
-		bangsal, _ := iu.antreanRepository.GetPasienBangsal(modulID)
+		bangsal, _ := iu.antreanRepository.GetPasienBangsal(modulID, "", "")
 
 		return dto.ResponseDashboard{
 				Jumlah: len(bangsal),

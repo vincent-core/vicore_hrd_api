@@ -13,9 +13,9 @@ type AntreanMapper interface {
 type AntreanRepository interface {
 	OnGetPengkajianDokterRepo(NoReg string) (res antrean.DAsesmenDokter, err error)
 	GetAntrianUGD() (res []antrean.AntrianPoliIGD, err error)
-	GetAntrianIGDDokterUmumRepository(KodeDokter string) (res []antrean.AntrianPoliIGD, err error)
-	GetPasienBangsalForDokter(kodeBangsal string, kodeDokter string) (res []antrean.KbangsalKasur, err error)
-	GetPasienBangsal(kodeBangsal string) (res []antrean.KbangsalKasur, err error)
+	GetAntrianIGDDokterUmumRepository(KodeDokter string, dateFrom string, dateTo string) (res []antrean.AntrianPoliIGD, err error)
+	GetPasienBangsalForDokter(kodeBangsal string, kodeDokter string, dateFrom string, dateTo string) (res []antrean.KbangsalKasur, err error)
+	GetPasienBangsal(kodeBangsal string, dateFrom string, dateTo string) (res []antrean.KbangsalKasur, err error)
 	OnGetDataRegisterPasienByID(ID string) (res []antrean.DRegisterPasien, err error)
 	OnGetDRekamPasienRANAPRepo(ID string) (res []antrean.PasienRANAP, err error)
 
@@ -25,6 +25,6 @@ type AntreanRepository interface {
 }
 
 type AntreanUseCase interface {
-	OnGetAntrianIGDUseCase(modulID string, person string, userID string) (res []dto.AntrianPasien, message string, err error)
+	OnGetAntrianIGDUseCase(req dto.GetAntranPasien, person string, userID string) (res []dto.AntrianPasien, message string, err error)
 	OnDashboardUseCase(modulID string) (res dto.ResponseDashboard, err error)
 }

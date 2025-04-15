@@ -75,7 +75,7 @@ func (hh *AntreanHandler) OnGetAntreanFiberHandler(c *fiber.Ctx) error {
 	person := c.Locals("person").(string)
 	userID := c.Locals("userID").(string)
 
-	data, message, er11 := hh.AntreanUseCase.OnGetAntrianIGDUseCase(payload.KDBagian, person, userID)
+	data, message, er11 := hh.AntreanUseCase.OnGetAntrianIGDUseCase(*payload, person, userID)
 
 	if er11 != nil {
 		response := helper.APIResponseFailure(message, http.StatusBadRequest)

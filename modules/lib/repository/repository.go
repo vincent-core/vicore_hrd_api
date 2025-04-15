@@ -34,7 +34,7 @@ func (lu *libRepository) FindAllPelayananRepository() (res []lib.KPelayanan, err
 }
 
 func (lu *libRepository) OnGetDataRekamMedis() (res []lib.DRekamMedis, err error) {
-	query := "SELECT nama_rm, kode_rm, link_url FROM vicore_rme.drekam_medis limit 100"
+	query := "SELECT nama_rm, kode_rm, link_url FROM vicore_rme.drekam_medis ORDER BY nama_rm DESC"
 
 	result := lu.DB.Raw(query).Scan(&res)
 

@@ -35,10 +35,10 @@ func (lu *antreanRepository) GetAntrianUGD() (res []antrean.AntrianPoliIGD, err 
 	return res, nil
 }
 
-func (lu *antreanRepository) GetAntrianIGDDokterUmumRepository(KodeDokter string) (res []antrean.AntrianPoliIGD, err error) {
-	query := "SELECT nama, kodedr, a.id AS id, noreg, no_book, a.reg_type no_antrian, umurth, status, tgllahir, b.jeniskelamin, c.namadokter AS dokter from his.antrianpoliugd AS a LEFT JOIN his.dprofilpasien AS b ON  a.id=b.id LEFT JOIN his.ktaripdokter AS c ON c.iddokter=a.kodedr WHERE a.kodedr=? OR a.kodedr='' OR a.kodedr='NONE'"
+func (lu *antreanRepository) GetAntrianIGDDokterUmumRepository(KodeDokter string, dateFrom string, dateTo string) (res []antrean.AntrianPoliIGD, err error) {
+	query := "SELECT nama, kodedr, a.id AS id, noreg, no_book, a.reg_type no_antrian, umurth, status, tgllahir, b.jeniskelamin, c.namadokter AS dokter from his.antrianpoliugd AS a LEFT JOIN his.dprofilpasien AS b ON  a.id=b.id LEFT JOIN his.ktaripdokter AS c ON c.iddokter=a.kodedr WHERE a.kodedr=? OR a.kodedr='' OR a.kodedr='NONE' AND a.jam >= ? AND a.jam < ? "
 
-	result := lu.DB.Raw(query, KodeDokter).Scan(&res)
+	result := lu.DB.Raw(query, KodeDokter, dateFrom, dateTo).Scan(&res)
 	if result.Error != nil {
 		message := fmt.Sprintf("Error %s, Data gagal disimpan", result.Error.Error())
 		return res, errors.New(message)
@@ -46,10 +46,13 @@ func (lu *antreanRepository) GetAntrianIGDDokterUmumRepository(KodeDokter string
 	return res, nil
 }
 
-func (lu *antreanRepository) GetPasienBangsalForDokter(kodeBangsal string, kodeDokter string) (res []antrean.KbangsalKasur, err error) {
-	query := `SELECT a.kodebangsal, a.kamar, a.kasur, a.id, b.tgllahir AS tgllahir, a.noreg, a.kodedr, b.firstname as nama, a.sex, a.ket, ds.namadokter AS dokter,  a.kasur AS kasur, a.kamar AS kamar FROM his.kbangsalkasur AS a INNER JOIN his.dprofilpasien AS b ON b.id=a.id LEFT JOIN his.ktaripdokter AS ds ON ds.iddokter=a.kodedr WHERE kodebangsal=? AND a.id !=""`
-
-	result := lu.DB.Raw(query, kodeBangsal).Scan(&res)
+func (lu *antreanRepository) GetPasienBangsalForDokter(kodeBangsal string, kodeDokter string, dateFrom string, dateTo string) (res []antrean.KbangsalKasur, err error) {
+	query := `SELECT a.kodebangsal, a.kamar, a.kasur, a.id, b.tgllahir AS tgllahir, a.noreg, a.kodedr, b.firstname AS nama, a.sex, a.ket, ds.namadokter AS dokter,  a.kasur AS kasur, a.kamar AS kamar 
+FROM his.kbangsalkasur AS a 
+INNER JOIN his.dprofilpasien AS b ON b.id=a.id 
+LEFT JOIN his.ktaripdokter AS ds ON ds.iddokter=a.kodedr 
+WHERE kodebangsal=? AND a.id !="" AND a.jam >= ? AND a.jam < ? `
+	result := lu.DB.Raw(query, kodeBangsal, dateFrom, dateTo).Scan(&res)
 
 	if result.Error != nil {
 		message := fmt.Sprintf("Error %s, Data tidak ditemukan", result.Error.Error())
@@ -59,10 +62,10 @@ func (lu *antreanRepository) GetPasienBangsalForDokter(kodeBangsal string, kodeD
 	return res, nil
 }
 
-func (lu *antreanRepository) GetPasienBangsal(kodeBangsal string) (res []antrean.KbangsalKasur, err error) {
-	query := `SELECT a.kodebangsal, a.kamar, a.kasur, b.tgllahir AS tgllahir, a.id, a.noreg, a.kodedr, b.firstname as nama, b.jeniskelamin AS sex, a.ket, ds.namadokter AS dokter FROM his.kbangsalkasur AS a INNER JOIN his.dprofilpasien AS b ON b.id=a.id LEFT JOIN his.ktaripdokter AS ds ON ds.iddokter=a.kodedr WHERE kodebangsal=? AND a.id !=""`
+func (lu *antreanRepository) GetPasienBangsal(kodeBangsal string, dateFrom string, dateTo string) (res []antrean.KbangsalKasur, err error) {
+	query := `SELECT a.kodebangsal, a.kamar, a.kasur, b.tgllahir AS tgllahir, a.id, a.noreg, a.kodedr, b.firstname as nama, b.jeniskelamin AS sex, a.ket, ds.namadokter AS dokter FROM his.kbangsalkasur AS a INNER JOIN his.dprofilpasien AS b ON b.id=a.id LEFT JOIN his.ktaripdokter AS ds ON ds.iddokter=a.kodedr WHERE kodebangsal=? AND a.id !="" AND a.jam >= ? AND a.jam < ?`
 
-	result := lu.DB.Raw(query, kodeBangsal).Scan(&res)
+	result := lu.DB.Raw(query, kodeBangsal, dateFrom, dateTo).Scan(&res)
 
 	if result.Error != nil {
 		message := fmt.Sprintf("Error %s, Data tidak ditemukan", result.Error.Error())

@@ -3,6 +3,8 @@ package dto
 type (
 	GetAntranPasien struct {
 		KDBagian string `json:"kd_bagian" validate:"required"`
+		DateFrom string `json:"date_from"`
+		DateTo   string `json:"date_to"`
 	}
 
 	OnGetDataRegisterByID struct {
