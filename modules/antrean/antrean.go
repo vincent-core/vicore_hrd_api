@@ -59,6 +59,7 @@ type (
 	DRegisterPasien struct {
 		Jam        string
 		Tanggal    string
+		Tgllahir   string
 		Id         string
 		Noreg      string
 		Nama       string

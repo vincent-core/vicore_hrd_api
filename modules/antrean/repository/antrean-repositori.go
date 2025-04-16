@@ -35,6 +35,20 @@ func (lu *antreanRepository) GetAntrianUGD() (res []antrean.AntrianPoliIGD, err 
 	return res, nil
 }
 
+func (lu *antreanRepository) OnGetDataPasienPulangByDateRepository(date string) (res []antrean.DRegisterPasien, err error) {
+	query := `SELECT a.nama, a.id, a.noreg, a.bagian, b.tgllahir FROM rekam.dregister AS a 
+LEFT JOIN his.dprofilpasien AS b ON a.id=b.id 
+WHERE a.tanggal = ? AND a.bagian = 'Poli UGD'`
+	result := lu.DB.Raw(query, date).Scan(&res)
+
+	if result.Error != nil {
+		message := fmt.Sprintf("Error %s, Data tidak ditemukan", result.Error.Error())
+		return res, errors.New(message)
+	}
+
+	return res, nil
+}
+
 func (lu *antreanRepository) GetAntrianIGDDokterUmumRepository(KodeDokter string, dateFrom string, dateTo string) (res []antrean.AntrianPoliIGD, err error) {
 	query := "SELECT nama, kodedr, a.id AS id, noreg, no_book, a.reg_type no_antrian, umurth, status, tgllahir, b.jeniskelamin, c.namadokter AS dokter from his.antrianpoliugd AS a LEFT JOIN his.dprofilpasien AS b ON  a.id=b.id LEFT JOIN his.ktaripdokter AS c ON c.iddokter=a.kodedr WHERE a.kodedr=? OR a.kodedr='' OR a.kodedr='NONE' AND a.jam >= ? AND a.jam < ? "
 

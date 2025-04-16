@@ -86,6 +86,38 @@ func (hh *AntreanHandler) OnGetAntreanFiberHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
+func (hh *AntreanHandler) OnGetPasienPulangByDateFiberHandler(c *fiber.Ctx) error {
+	type Payload struct {
+		Date string `json:"date"`
+	}
+	payload := new(Payload)
+	errs := c.BodyParser(&payload)
+
+	if errs != nil {
+		response := helper.APIResponseFailure("Data tidak dapat diproses", http.StatusCreated)
+		return c.Status(fiber.StatusCreated).JSON(response)
+	}
+
+	validate := validator.New()
+
+	if errs := validate.Struct(payload); errs != nil {
+		errors := helper.FormatValidationError(errs)
+		message := fmt.Sprintf("Error %s, Data tidak dapat disimpan", strings.Join(errors, "\n"))
+		response := helper.APIResponse(message, http.StatusBadRequest, errors)
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	data, err := hh.AntreanUseCase.OnGetPasienPulangByDateUseCase(payload.Date)
+
+	if err != nil {
+		response := helper.APIResponseFailure("gagal mendapatkan data", http.StatusBadRequest)
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	response := helper.APIResponse("berhasil mendapatkan data", http.StatusOK, data)
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
 func (hh *AntreanHandler) OnGetDataRegistrasiPasienFiberHandler(c *fiber.Ctx) error {
 	payload := new(dto.OnGetDataRegisterByID)
 	errs := c.BodyParser(&payload)

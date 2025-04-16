@@ -222,6 +222,28 @@ func (iu *antreanUseCase) OnGetAntrianIGDUseCase(req dto.GetAntranPasien, person
 	}
 }
 
+func (iu *antreanUseCase) OnGetPasienPulangByDateUseCase(date string) (res []dto.AntrianPasien, err error) {
+	data, _ := iu.antreanRepository.OnGetDataPasienPulangByDateRepository(date)
+
+	var list = []dto.AntrianPasien{}
+
+	if len(data) == 0 {
+		return make([]dto.AntrianPasien, 0), nil
+	}
+
+	for i := 0; i <= len(data)-1; i++ {
+		list = append(list, dto.AntrianPasien{
+			Mrn:        data[i].Id,
+			NamaPasien: data[i].Nama,
+			Noreg:      data[i].Noreg,
+			Tgllahir:   tanggalIndoFromISO(data[i].Tgllahir),
+			Bagian:     data[i].Bagian,
+		})
+	}
+
+	return list, nil
+}
+
 func (iu *antreanUseCase) OnDashboardUseCase(modulID string) (res dto.ResponseDashboard, err error) {
 
 	if modulID == "IGD001" {

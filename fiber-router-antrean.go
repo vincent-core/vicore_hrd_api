@@ -15,4 +15,6 @@ func (service *Service) FiberAntreanRouterListen(Logging *logrus.Logger, Router 
 	apiV1.Post("antrean-pasien", rest.JWTProtected(), service.AntreanHandler.OnGetAntreanFiberHandler)
 	apiV1.Post("dashboard", service.AntreanHandler.OnDashboardFiberHandler)
 	apiV1.Post("register-pasien", service.AntreanHandler.OnGetDataRegistrasiPasienFiberHandler)
+
+	apiV1.Post("pasien-pulang-by-date", service.AntreanHandler.OnGetPasienPulangByDateFiberHandler)
 }
